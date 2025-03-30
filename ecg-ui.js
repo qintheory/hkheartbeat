@@ -5,7 +5,7 @@ let showLabels = false;
 const toggleContainer = d3.select("body")
   .insert("div", ":first-child")
   .style("position", "fixed")
-  .style("top", "10px")
+  .style("bottom", "10px")
   .style("right", "10px")
   .style("background", "rgba(255,255,255,0.5")
   .style("padding", "5px 10px")
@@ -47,7 +47,7 @@ toggleContainer.append("label")
   });
 
 // Add data gap marker below toggles
-  toggleContainer.append("div").style("font-family", "Helvetica Neue").style("text-transform", "uppercase").style("color", "black").style("font-style", "italic").text("Gap in : 1941–1946");
+  toggleContainer.append("div").style("font-family", "Helvetica Neue").style("color", "black").style("font-style", "italic").text("Gap in between 1941–1946");
 
 d3.csv("cleaned_r_rr_by_year.csv").then(data => {
   const lineHeight = 200; // doubled spacing between lines
