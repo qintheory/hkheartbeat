@@ -49,7 +49,7 @@ toggleContainer.append("label")
 // Add data gap marker below toggles
   toggleContainer.append("div").style("font-family", "Helvetica Neue").style("color", "black").style("font-style", "italic").text("Gap in between 1941–1946");
 
-d3.csv("cleaned_r_rr_by_year.csv").then(data => {
+d3.csv("r_rr_s_by_year.csv").then(data => {
   const lineHeight = 200; // doubled spacing between lines
   const scaleX = 0.13;
   const scaleY = 0.3;
@@ -83,8 +83,12 @@ d3.csv("cleaned_r_rr_by_year.csv").then(data => {
     const r = +d.R_Value;
     const rawSpacing = +d.RR_Days;
     const cappedSpacing = Math.min(rawSpacing, 500); // cap long gaps
-    const spacing = cappedSpacing * scaleX;
+    const numericYear = d.Date ? parseInt(d.Date.split("-")[0]) : 1900;
+    const timeScaleFactor = numericYear < 1960 ? 1 : 0.6;
+    const spacing = cappedSpacing * scaleX * timeScaleFactor;
+    const s = +d.S_Value;
     const amp = r * scaleY;
+    const sAmp = s * scaleY * 0.6;
     const chaosFactor = 0.8 + Math.random() * 0.6;
     const points = [];
 
@@ -94,8 +98,11 @@ d3.csv("cleaned_r_rr_by_year.csv").then(data => {
       const sin2 = Math.sin(j * 0.5 + i) * 6 * chaosFactor;
       const perlin = Math.sin(j * 0.03 + i * 0.1) * 20 * chaosFactor;
       const drift = Math.sin(j * 0.005 + i) * 15 * chaosFactor;
-      const peak = -amp * Math.exp(-Math.pow((j - spacing / 2) / 10, 2));
-      const py = yBase + sin1 + sin2 + perlin + drift + peak;
+      const rCenter = spacing / 2;
+      const sOffset = spacing / 10;
+      const rPeak = -amp * Math.exp(-Math.pow((j - rCenter) / 10, 2));
+      const sDip = s > 0 ? -sAmp * Math.exp(-Math.pow((j - rCenter - sOffset) / 5, 2)) : 0;
+      const py = yBase + sin1 + sin2 + perlin + drift + rPeak + sDip;
       points.push([px, py]);
     }
 
